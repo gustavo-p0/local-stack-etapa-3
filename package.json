@@ -1,0 +1,30 @@
+{
+  "name": "products-crud-service",
+  "version": "1.0.0",
+  "description": "CRUD Serverless com LocalStack, DynamoDB e SNS",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy --stage local",
+    "remove": "serverless remove --stage local",
+    "logs": "serverless logs -f subscriber --stage local --tail"
+  },
+  "keywords": [
+    "serverless",
+    "localstack",
+    "dynamodb",
+    "sns",
+    "lambda"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-localstack": "^1.2.0",
+    "serverless-offline": "^13.3.0"
+  }
+}
+

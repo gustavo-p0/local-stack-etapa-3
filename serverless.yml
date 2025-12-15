@@ -1,0 +1,119 @@
+service: products-crud-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'local'}
+  region: us-east-1
+  environment:
+    PRODUCTS_TABLE: ${self:custom.productsTableName}
+    SNS_TOPIC_ARN: !Ref ProductNotificationsTopic
+    AWS_ENDPOINT_URL: ${self:custom.localstack.endpoint}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
+            - dynamodb:Query
+          Resource:
+            - !GetAtt ProductsTable.Arn
+        - Effect: Allow
+          Action:
+            - sns:Publish
+            - sns:Subscribe
+          Resource:
+            - !Ref ProductNotificationsTopic
+
+plugins:
+  - serverless-localstack
+  - serverless-offline
+
+custom:
+  productsTableName: ProductsTable-${self:provider.stage}
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    endpoint: http://localhost:4566
+    edgePort: 4566
+    autostart: false
+    lambda:
+      mountCode: false
+    docker:
+      sudo: false
+
+functions:
+  createProduct:
+    handler: src/handlers/createProduct.handler
+    events:
+      - http:
+          path: items
+          method: post
+          cors: true
+
+  getProducts:
+    handler: src/handlers/getProducts.handler
+    events:
+      - http:
+          path: items
+          method: get
+          cors: true
+
+  getProduct:
+    handler: src/handlers/getProduct.handler
+    events:
+      - http:
+          path: items/{id}
+          method: get
+          cors: true
+
+  updateProduct:
+    handler: src/handlers/updateProduct.handler
+    events:
+      - http:
+          path: items/{id}
+          method: put
+          cors: true
+
+  deleteProduct:
+    handler: src/handlers/deleteProduct.handler
+    events:
+      - http:
+          path: items/{id}
+          method: delete
+          cors: true
+
+  subscriber:
+    handler: src/handlers/subscriber.handler
+    events:
+      - sns:
+          arn: !Ref ProductNotificationsTopic
+          topicName: ProductNotifications-${self:provider.stage}
+
+resources:
+  Resources:
+    ProductsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.productsTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    ProductNotificationsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ProductNotifications-${self:provider.stage}
+        DisplayName: Product Notifications Topic
+
