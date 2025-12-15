@@ -74,6 +74,7 @@ serverless deploy --stage local
 **Importante**: Após o deploy, o Serverless Framework exibirá os endpoints da API. Anote a URL base, pois você precisará dela para fazer as requisições.
 
 Exemplo de saída:
+
 ```
 endpoints:
   POST - http://localhost:4566/restapis/abc123/local/_user_request/items
@@ -109,16 +110,18 @@ http://localhost:4566/restapis/{API_ID}/local/_user_request
 Cria um novo produto e envia notificação SNS.
 
 **Request Body**:
+
 ```json
 {
   "name": "Notebook Dell Inspiron",
   "description": "Notebook com Intel i7, 16GB RAM, 512GB SSD",
-  "price": 3499.90,
+  "price": 3499.9,
   "quantity": 15
 }
 ```
 
 **Response** (201 Created):
+
 ```json
 {
   "message": "Produto criado com sucesso",
@@ -126,7 +129,7 @@ Cria um novo produto e envia notificação SNS.
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Notebook Dell Inspiron",
     "description": "Notebook com Intel i7, 16GB RAM, 512GB SSD",
-    "price": 3499.90,
+    "price": 3499.9,
     "quantity": 15,
     "createdAt": "2025-12-14T10:30:00.000Z",
     "updatedAt": "2025-12-14T10:30:00.000Z"
@@ -141,6 +144,7 @@ Cria um novo produto e envia notificação SNS.
 Retorna lista com todos os produtos cadastrados.
 
 **Response** (200 OK):
+
 ```json
 {
   "count": 2,
@@ -166,13 +170,14 @@ Retorna lista com todos os produtos cadastrados.
 Retorna um produto específico.
 
 **Response** (200 OK):
+
 ```json
 {
   "product": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Notebook Dell Inspiron",
     "description": "Notebook com Intel i7, 16GB RAM, 512GB SSD",
-    "price": 3499.90,
+    "price": 3499.9,
     "quantity": 15,
     "createdAt": "2025-12-14T10:30:00.000Z",
     "updatedAt": "2025-12-14T10:30:00.000Z"
@@ -181,6 +186,7 @@ Retorna um produto específico.
 ```
 
 **Response** (404 Not Found):
+
 ```json
 {
   "message": "Produto não encontrado"
@@ -194,15 +200,17 @@ Retorna um produto específico.
 Atualiza um produto existente e envia notificação SNS.
 
 **Request Body** (todos os campos são opcionais):
+
 ```json
 {
   "name": "Notebook Dell Inspiron 15",
-  "price": 3299.90,
+  "price": 3299.9,
   "quantity": 20
 }
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "message": "Produto atualizado com sucesso",
@@ -210,7 +218,7 @@ Atualiza um produto existente e envia notificação SNS.
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Notebook Dell Inspiron 15",
     "description": "Notebook com Intel i7, 16GB RAM, 512GB SSD",
-    "price": 3299.90,
+    "price": 3299.9,
     "quantity": 20,
     "createdAt": "2025-12-14T10:30:00.000Z",
     "updatedAt": "2025-12-14T10:35:00.000Z"
@@ -295,12 +303,14 @@ Sistema de Gerenciamento de Produtos
 ## ✅ Validações Implementadas
 
 ### Create (POST)
+
 - `name`: obrigatório, string não vazia
 - `price`: obrigatório, número > 0
 - `quantity`: obrigatório, número >= 0
 - `description`: opcional, string
 
 ### Update (PUT)
+
 - Todos os campos são opcionais
 - Validação de tipo aplicada aos campos fornecidos
 - Produto deve existir (retorna 404 se não encontrado)
@@ -432,6 +442,7 @@ serverless deploy --stage local
 ### Funções Lambda não encontram variáveis de ambiente
 
 Verifique se o `serverless.yml` está configurado corretamente com:
+
 - `PRODUCTS_TABLE`
 - `SNS_TOPIC_ARN`
 - `AWS_ENDPOINT_URL`
@@ -466,4 +477,3 @@ MIT License - Projeto educacional
 - [ ] Adicionar testes unitários e de integração
 - [ ] CI/CD com GitHub Actions
 - [ ] Deploy em AWS real (não LocalStack)
-

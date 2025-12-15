@@ -1,6 +1,6 @@
 service: products-crud-service
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -8,9 +8,9 @@ provider:
   stage: ${opt:stage, 'local'}
   region: us-east-1
   environment:
-    PRODUCTS_TABLE: ${self:custom.productsTableName}
-    SNS_TOPIC_ARN: !Ref ProductNotificationsTopic
-    AWS_ENDPOINT_URL: ${self:custom.localstack.endpoint}
+    PRODUCTS_TABLE: ProductsTable-local
+    SNS_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:ProductNotifications-local
+    AWS_ENDPOINT_URL: http://localhost:4566
   iam:
     role:
       statements:
@@ -57,6 +57,7 @@ functions:
           path: items
           method: post
           cors: true
+          integration: lambda-proxy
 
   getProducts:
     handler: src/handlers/getProducts.handler
@@ -65,6 +66,7 @@ functions:
           path: items
           method: get
           cors: true
+          integration: lambda-proxy
 
   getProduct:
     handler: src/handlers/getProduct.handler
@@ -73,6 +75,7 @@ functions:
           path: items/{id}
           method: get
           cors: true
+          integration: lambda-proxy
 
   updateProduct:
     handler: src/handlers/updateProduct.handler
@@ -81,6 +84,7 @@ functions:
           path: items/{id}
           method: put
           cors: true
+          integration: lambda-proxy
 
   deleteProduct:
     handler: src/handlers/deleteProduct.handler
@@ -89,6 +93,7 @@ functions:
           path: items/{id}
           method: delete
           cors: true
+          integration: lambda-proxy
 
   subscriber:
     handler: src/handlers/subscriber.handler
@@ -116,4 +121,3 @@ resources:
       Properties:
         TopicName: ProductNotifications-${self:provider.stage}
         DisplayName: Product Notifications Topic
-
